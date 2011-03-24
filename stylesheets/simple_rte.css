@@ -1,0 +1,19 @@
+body {
+  font: normal 13px Helvetica, Arial, sans-serif;
+  color: #333333; }
+
+.rte_menu {
+  overflow: hidden;
+  border: 1px solid #cccccc;
+  background: #f0f0f0; }
+  .rte_menu a {
+    float: left;
+    padding: 3px 5px;
+    text-decoration: none;
+    text-shadow: 1px 1px 1px #aaaaaa;
+    color: #333333;
+    border-left: 1px solid #cccccc;}
+  .rte_menu a.bold { font-weight: bold; }
+  .rte_menu a.italic { font-style: italic; }
+  .rte_menu a.underline { text-decoration: underline; }
+  .rte_menu a:first-of-type { border: none; }

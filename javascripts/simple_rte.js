@@ -42,14 +42,14 @@
             // return
             var offset = {},
                 text = this.text(),
-                range = getRange();
+                range = getRange(this);
             offset.start = range.startOffset;
             offset.end = range.endOffset;
             this.text(text.substring(0, offset.start));
             text = text.substring(offset.end);
             $("<" + el + " />", {
               contenteditable: true,
-              text: text
+              text: $.trim(text)
             }).insertAfter(this).focus();
             e.preventDefault();
           },
@@ -112,17 +112,24 @@
     });
   };
 
-  function getRange() {
+  function getRange(el) {
     var selection, range;
     if (window.getSelection) {
       selection = window.getSelection();
       if (selection.getRangeAt && selection.rangeCount) {
-          range = selection.getRangeAt(0);
+        range = selection.getRangeAt(0);
       }
     }
     else if (document.selection && document.selection.createRange) {
-        range = document.selection.createRange();
+      range = document.selection.createRange();
     }
     return range;
+  }
+
+  function findBlockParent() {
+    if (this.css("display") === "inline") {
+      findBlockParent.apply(this.parent());
+    }
+    else { return this; }
   }
 })(jQuery);

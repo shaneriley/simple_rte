@@ -47,7 +47,6 @@
             offset.end = range.endOffset;
             this.text(text.substring(0, offset.start));
             text = text.substring(offset.end);
-            if (offset.start === text.length) { text = ""; }
             $("<" + el + " />", {
               contenteditable: true,
               text: text

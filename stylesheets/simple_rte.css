@@ -17,3 +17,6 @@ body {
   .rte_menu a.italic { font-style: italic; }
   .rte_menu a.underline { text-decoration: underline; }
   .rte_menu a:first-of-type { border: none; }
+
+.simple_rte p:hover,
+.simple_rte li:hover { outline: 1px dotted #cccccc; }

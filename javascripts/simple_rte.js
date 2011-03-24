@@ -26,25 +26,23 @@
         defaults: {
           "8": function(el, e) {
             // backspace
-            var $b = this.prev();
+            var $b = this.prev(),
+                range = getRange();
             if (this.text() === "") {
               this.remove();
               $b.focus();
               e.preventDefault();
             }
+            else if (range.startOffset === 0) {
+              $b.text($b.text() + this.text());
+              this.remove();
+            }
           },
           "13": function(el, e) {
             // return
-            var selection, range, offset = {}, text = this.text();
-            if (window.getSelection) {
-              selection = window.getSelection();
-              if (selection.getRangeAt && selection.rangeCount) {
-                  range = selection.getRangeAt(0);
-              }
-            }
-            else if (document.selection && document.selection.createRange) {
-                range = document.selection.createRange();
-            }
+            var offset = {},
+                text = this.text(),
+                range = getRange();
             offset.start = range.startOffset;
             offset.end = range.endOffset;
             this.text(text.substring(0, offset.start));
@@ -115,4 +113,17 @@
     });
   };
 
+  function getRange() {
+    var selection, range;
+    if (window.getSelection) {
+      selection = window.getSelection();
+      if (selection.getRangeAt && selection.rangeCount) {
+          range = selection.getRangeAt(0);
+      }
+    }
+    else if (document.selection && document.selection.createRange) {
+        range = document.selection.createRange();
+    }
+    return range;
+  }
 })(jQuery);

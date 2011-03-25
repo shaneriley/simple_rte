@@ -98,7 +98,7 @@
                 $e = document.createElement(el);
                 range.surroundContents($e);
                 $e = $($e);
-                $e.wrap(opts.editable_shim.clone());
+                $e.wrap(opts.editable_shim.clone()).attr("contenteditable", true);
                 if ($e.css("display") !== "block") {
                   $e.closest("." + opts.editable_shim.attr("class")).css("display", "inline");
                 }

@@ -86,7 +86,13 @@
                 $e;
             if (sel_obj.rangeCount) {
               if ($wrapper.is(el)) {
-                $wrapper.replaceWith($wrapper.text());
+                if (el === "p") {
+                  var event = $.Event("keydown");
+                  event.keyCode = 13;
+                  $wrapper.trigger(event);
+                  $e = $wrapper.next(el);
+                }
+                else { $wrapper.replaceWith($wrapper.text()); }
               }
               else {
                 $e = document.createElement(el);
@@ -124,16 +130,19 @@
     simpleRte.menu = function() {
       var $bar = $("<div />", { "class": "rte_menu"});
       for (var control in opts.controls) {
-        $("<a />", {
-          href: "#",
-          text: (opts.controls[control].label) ? opts.controls[control].label : control,
-          "class": control,
-          click: simpleRte.controls[control]
-        }).appendTo($bar);
+        if (opts.controls[control]) {
+          $("<a />", {
+            href: "#",
+            text: (opts.controls[control].label) ? opts.controls[control].label : control,
+            "class": control,
+            click: simpleRte.controls[control]
+          }).appendTo($bar);
+        }
       }
       return $bar;
     };
 
+    opts.selector = this.selector;
     return this.each(function() {
       var $e = $(this),
           els = {

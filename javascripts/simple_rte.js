@@ -1,6 +1,6 @@
 ;(function($) {
 
-  $.fn.simpleRte = function(defaults) {
+  $.fn.simpleRte = function(options) {
     var simpleRte = {
       controls: {
         bold: (function() {
@@ -20,6 +20,31 @@
             simpleRte.events.defaults.wrapWithElement("u");
             return false;
           };
+        })(),
+        paragraph: (function() {
+          return function() {
+            var $p = simpleRte.events.defaults.wrapWithElement("p");
+            $p.attr("contenteditable", true).focus();
+            return false;
+          }
+        })(),
+        ul: (function() {
+          return function() {
+            var $ul = simpleRte.events.defaults.wrapWithElement("ul");
+            $("<li />", {
+              contenteditable: true,
+              text: $ul.text() }).appendTo($ul.empty()).focus();
+            return false;
+          }
+        })(),
+        ol: (function() {
+          return function() {
+            var $ol = simpleRte.events.defaults.wrapWithElement("ol");
+            $("<li />", {
+              contenteditable: true,
+              text: $ol.text() }).appendTo($ol.empty()).focus();
+            return false;
+          }
         })()
       },
       events: {
@@ -54,18 +79,26 @@
             e.preventDefault();
           },
           wrapWithElement: function(el) {
-            var sel_obj = window.getSelection(),
-                selection = sel_obj.getRangeAt(0),
-                $wrapper = $(selection.endContainer.parentNode);
+            var range = getRange(),
+                sel_obj = range.selection;
+            if (!sel_obj.rangeCount) { return false; }
+            var $wrapper = $(range.endContainer.parentNode),
+                $e;
             if (sel_obj.rangeCount) {
               if ($wrapper.is(el)) {
                 $wrapper.replaceWith($wrapper.text());
               }
               else {
-                selection.surroundContents(document.createElement(el));
+                $e = document.createElement(el);
+                range.surroundContents($e);
+                $e = $($e);
+                $e.wrap(opts.editable_shim.clone());
+                if ($e.css("display") !== "block") {
+                  $e.closest("." + opts.editable_shim.attr("class")).css("display", "inline");
+                }
               }
             }
-            return false;
+            return $e;
           }
         }
       }
@@ -74,16 +107,26 @@
           controls: {
             bold: true,
             italic: true,
-            underline: true
-          }
-        }, defaults);
+            underline: true,
+            paragraph: {
+              label: "⁋"
+            },
+            ul: {
+              label: "• …"
+            },
+            ol: {
+              label: "1. …"
+            }
+          },
+          editable_shim: $("<div />", { "class": "rte_shim", contenteditable: false })
+        }, options);
 
     simpleRte.menu = function() {
       var $bar = $("<div />", { "class": "rte_menu"});
       for (var control in opts.controls) {
         $("<a />", {
           href: "#",
-          text: control,
+          text: (opts.controls[control].label) ? opts.controls[control].label : control,
           "class": control,
           click: simpleRte.controls[control]
         }).appendTo($bar);
@@ -123,6 +166,7 @@
     else if (document.selection && document.selection.createRange) {
       range = document.selection.createRange();
     }
+    range.selection = selection;
     return range;
   }
 

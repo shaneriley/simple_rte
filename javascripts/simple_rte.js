@@ -80,20 +80,40 @@
           },
           wrapWithElement: function(el) {
             var range = getRange(),
-                sel_obj = range.selection;
+                sel_obj = range.selection,
+                additional_rules_for = {
+                  p: function() {
+                    if (!$wrapper.is(el)) { return false; }
+                    var event = $.Event("keydown");
+                    event.keyCode = 13;
+                    $wrapper.trigger(event);
+                    $e = $wrapper.next(el);
+                  },
+                  ul: function() {
+                    // TODO: ul being appended as first child of ul rather than li
+                    var offset = {
+                      start: range.startOffset,
+                      end: range.endOffset
+                    },
+                      text = $wrapper.text();
+                    $wrapper.text(text.substring(0, offset.start));
+                    $e = $("<" + el + " />", {
+                      contenteditable: false,
+                      text: $.trim(text.substring(offset.end))
+                    });
+                    if ($wrapper.css("display") !== "block" || $wrapper.is("p")) {
+                      $e.insertAfter($wrapper);
+                    }
+                    else { $e.appendTo($wrapper); }
+                  }
+                };
+            additional_rules_for.ol = additional_rules_for.ul;
             if (!sel_obj.rangeCount) { return false; }
             var $wrapper = $(range.endContainer.parentNode),
                 $e;
             if (sel_obj.rangeCount) {
-              if ($wrapper.is(el)) {
-                if (el === "p") {
-                  var event = $.Event("keydown");
-                  event.keyCode = 13;
-                  $wrapper.trigger(event);
-                  $e = $wrapper.next(el);
-                }
-                else { $wrapper.replaceWith($wrapper.text()); }
-              }
+              if (el in additional_rules_for) { additional_rules_for[el](); }
+              else if ($wrapper.is(el)) { $wrapper.replaceWith($wrapper.text()); }
               else {
                 $e = document.createElement(el);
                 range.surroundContents($e);

@@ -58,7 +58,7 @@
               $b.focus();
               e.preventDefault();
             }
-            else if (range.startOffset === 0) {
+            else if (range.startOffset === 0 && $b.length && !$b.is("." + opts.menu_class)) {
               $b.text($b.text() + this.text());
               this.remove();
             }
@@ -143,11 +143,12 @@
               label: "1. …"
             }
           },
+          menu_class: "rte_menu",
           editable_shim: $("<div />", { "class": "rte_shim", contenteditable: false })
         }, options);
 
     simpleRte.menu = function() {
-      var $bar = $("<div />", { "class": "rte_menu"});
+      var $bar = $("<div />", { "class": opts.menu_class });
       for (var control in opts.controls) {
         if (opts.controls[control]) {
           $("<a />", {

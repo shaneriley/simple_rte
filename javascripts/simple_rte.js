@@ -51,17 +51,28 @@
         defaults: {
           "8": function(el, e) {
             // backspace
-            var $b = this.prev(),
-                range = getRange();
-            if (this.text() === "") {
-              this.remove();
-              $b.focus();
-              e.preventDefault();
+            var $e = this,
+                $b = $e.prev(),
+                range = getRange(),
+                shiftText = function() {
+                  $b.text($b.text() + $e.text());
+                  $e.remove();
+                };
+            if ($e.text() === "") { $e.remove(); }
+            else if ($e.closest("ul, ol").length) {
+              if (!$e.closest("ul, ol").find("li").not(this).length) {
+                console.log("!");
+                $b = $e.closest("ul, ol").prev();
+                $b.text($b.text() + $e.text());
+                $e.closest("ul, ol").remove();
+              }
+              else { shiftText(); }
             }
             else if (range.startOffset === 0 && $b.length && !$b.is("." + opts.menu_class)) {
-              $b.text($b.text() + this.text());
-              this.remove();
+              shiftText();
             }
+            $b.focus();
+            e.preventDefault();
           },
           "13": function(el, e) {
             // return

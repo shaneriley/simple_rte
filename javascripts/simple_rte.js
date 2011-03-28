@@ -90,7 +90,6 @@
                     $e = $wrapper.next(el);
                   },
                   ul: function() {
-                    // TODO: ul being appended as first child of ul rather than li
                     var offset = {
                       start: range.startOffset,
                       end: range.endOffset
@@ -101,7 +100,7 @@
                       contenteditable: false,
                       text: $.trim(text.substring(offset.end))
                     });
-                    if ($wrapper.css("display") !== "block" || $wrapper.is("p")) {
+                    if (/inline/.test($wrapper.css("display")) || $wrapper.is("p")) {
                       $e.insertAfter($wrapper);
                     }
                     else { $e.appendTo($wrapper); }

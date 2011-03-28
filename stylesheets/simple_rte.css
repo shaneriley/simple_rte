@@ -19,4 +19,10 @@ body {
   .rte_menu a:first-of-type { border: none; }
 
 .simple_rte p:hover,
-.simple_rte li:hover { outline: 1px dotted #cccccc; }
+.simple_rte p:focus,
+.simple_rte li:hover,
+.simple_rte li:focus,
+.simple_rte p *:hover,
+.simple_rte p *:focus,
+.simple_rte li *:hover,
+.simple_rte li *:focus { outline: 1px dotted #cccccc; }

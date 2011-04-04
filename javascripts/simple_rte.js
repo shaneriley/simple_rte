@@ -3,49 +3,46 @@
   $.fn.simpleRte = function(options) {
     var simpleRte = {
       controls: {
-        bold: (function() {
-          return function() {
-            simpleRte.events.defaults.wrapWithElement("b");
-            return false;
-          };
-        })(),
-        italic: (function() {
-          return function() {
-            simpleRte.events.defaults.wrapWithElement("i");
-            return false;
-          };
-        })(),
-        underline: (function() {
-          return function() {
-            simpleRte.events.defaults.wrapWithElement("u");
-            return false;
-          };
-        })(),
-        paragraph: (function() {
-          return function() {
-            var $p = simpleRte.events.defaults.wrapWithElement("p");
-            $p.attr("contenteditable", true).focus();
-            return false;
+        bold: function() {
+          simpleRte.events.defaults.wrapWithElement("b");
+          return false;
+        },
+        italic: function() {
+          simpleRte.events.defaults.wrapWithElement("i");
+          return false;
+        },
+        underline: function() {
+          simpleRte.events.defaults.wrapWithElement("u");
+          return false;
+        },
+        paragraph: function() {
+          var $p = simpleRte.events.defaults.wrapWithElement("p");
+          if ($p.attr("data-end_append")) {
+            $(this).closest(opts.selector).append($p.removeAttr("data-end_append"));
           }
-        })(),
-        ul: (function() {
-          return function() {
-            var $ul = simpleRte.events.defaults.wrapWithElement("ul");
-            $("<li />", {
-              contenteditable: true,
-              text: $ul.text() }).appendTo($ul.empty()).focus();
-            return false;
+          $p.attr("contenteditable", true).focus();
+          return false;
+        },
+        ul: function() {
+          var $ul = simpleRte.events.defaults.wrapWithElement("ul");
+          if ($ul.attr("data-end_append")) {
+            $(this).closest(opts.selector).append($ul.removeAttr("data-end_append"));
           }
-        })(),
-        ol: (function() {
-          return function() {
-            var $ol = simpleRte.events.defaults.wrapWithElement("ol");
-            $("<li />", {
-              contenteditable: true,
-              text: $ol.text() }).appendTo($ol.empty()).focus();
-            return false;
+          $("<li />", {
+            contenteditable: true,
+            text: $ul.text() }).appendTo($ul.empty()).focus();
+          return false;
+        },
+        ol: function() {
+          var $ol = simpleRte.events.defaults.wrapWithElement("ol");
+          if ($ol.attr("data-end_append")) {
+            $(this).closest(opts.selector).append($ol.removeAttr("data-end_append"));
           }
-        })()
+          $("<li />", {
+            contenteditable: true,
+            text: $ol.text() }).appendTo($ol.empty()).focus();
+          return false;
+        }
       },
       events: {
         defaults: {
@@ -61,7 +58,6 @@
             if ($e.text() === "") { $e.remove(); }
             else if ($e.closest("ul, ol").length) {
               if (!$e.closest("ul, ol").find("li").not(this).length) {
-                console.log("!");
                 $b = $e.closest("ul, ol").prev();
                 $b.text($b.text() + $e.text());
                 $e.closest("ul, ol").remove();
@@ -118,7 +114,12 @@
                   }
                 };
             additional_rules_for.ol = additional_rules_for.ul;
-            if (!sel_obj.rangeCount) { return false; }
+            if (!sel_obj.rangeCount) {
+              if (el in additional_rules_for) {
+                return $("<" + el + " />", { "data-end_append": true });
+              }
+              return false;
+            }
             var $wrapper = $(range.endContainer.parentNode),
                 $e;
             if (sel_obj.rangeCount) {
@@ -196,7 +197,7 @@
   };
 
   function getRange(el) {
-    var selection, range;
+    var selection, range = {};
     if (window.getSelection) {
       selection = window.getSelection();
       if (selection.getRangeAt && selection.rangeCount) {

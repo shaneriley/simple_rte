@@ -42,6 +42,16 @@
             contenteditable: true,
             text: $ol.text() }).appendTo($ol.empty()).focus();
           return false;
+        },
+        image: function() {
+          var $img,
+              img_src = prompt("Enter an image URL");
+          if (img_src) {
+            $img = simpleRte.events.defaults.wrapWithElement("img");
+            $img[0].src = img_src;
+            $img.text("").unwrap("." + opts.editable_shim.attr("class"));
+          }
+          return false;
         }
       },
       events: {
@@ -179,7 +189,8 @@
             },
             ol: {
               label: "1. …"
-            }
+            },
+            image: true
           },
           menu_class: "rte_menu",
           editable_shim: $("<div />", { "class": "rte_shim", contenteditable: false })

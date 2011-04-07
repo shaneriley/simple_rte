@@ -56,6 +56,18 @@
             }
           }
           return false;
+        },
+        h1: function() {
+          simpleRte.events.defaults.wrapWithElement("h1");
+          return false;
+        },
+        h2: function() {
+          simpleRte.events.defaults.wrapWithElement("h2");
+          return false;
+        },
+        h3: function() {
+          simpleRte.events.defaults.wrapWithElement("h3");
+          return false;
         }
       },
       events: {
@@ -151,9 +163,30 @@
                       $e.insertAfter($wrapper);
                     }
                     else { $e.appendTo($wrapper); }
+                  },
+                  h1: function() {
+                    if (range.endOffset === 1 && range.startOffset) {
+                      $wrapper = $(range.endContainer);
+                    }
+                    var offset = {
+                      start: range.startOffset,
+                      end: range.endOffset
+                    },
+                      text = $wrapper.text();
+                    $wrapper.text(text.substring(0, offset.start));
+                    $e = $("<" + el + " />", {
+                      contenteditable: true,
+                      text: $.trim(text.substring(offset.end))
+                    });
+                    if (/inline/.test($wrapper.css("display")) || $wrapper.is("p")) {
+                      $e.insertAfter($wrapper);
+                    }
+                    else { $e.appendTo($wrapper); }
+                    $e.focus();
                   }
                 };
             additional_rules_for.ol = additional_rules_for.ul;
+            additional_rules_for.h2 = additional_rules_for.h3 = additional_rules_for.h1;
             if (range.collapsed) {
               range.insertNode($("<span />", { id: "caret" })[0]);
               var $caret = $("#caret");
@@ -203,7 +236,10 @@
             ol: {
               label: "1. …"
             },
-            image: true
+            image: true,
+            h1: true,
+            h2: true,
+            h3: true
           },
           menu_class: "rte_menu",
           editable_shim: $("<div />", { "class": "rte_shim", contenteditable: false })

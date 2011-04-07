@@ -90,6 +90,10 @@
                 sel_obj = range.selection,
                 additional_rules_for = {
                   p: function() {
+                    if (range.endOffset === 1 && range.startOffset) {
+                      $wrapper = $(range.endContainer);
+                    }
+                    if ($wrapper.is("ul, ol, li")) { return false; }
                     if (!$wrapper.is(el)) {
                       var offset = {
                         start: range.startOffset,
@@ -100,12 +104,7 @@
                       $e = $("<" + el + " />", {
                         text: $.trim(text.substring(offset.end))
                       });
-                      if (!$wrapper.is("li")) {
-                        $e.insertAfter($wrapper);
-                      }
-                      else {
-                        $e.appendTo($wrapper).wrap(opts.editable_shim.clone());
-                      }
+                      $e.insertAfter($wrapper);
                     }
                     else {
                       var event = $.Event("keydown");

@@ -62,7 +62,7 @@
                 $b = $e.prev(),
                 range = getRange(),
                 shiftText = function() {
-                  $b.text($b.text() + $e.text());
+                  $b.html($b.html() + $e.html());
                   $e.remove();
                 };
             if ($e.text() === "") { $e.remove(); }

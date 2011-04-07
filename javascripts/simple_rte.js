@@ -17,10 +17,12 @@
         },
         paragraph: function() {
           var $p = simpleRte.events.defaults.wrapWithElement("p");
-          if ($p.attr("data-end_append")) {
-            $(this).closest(opts.selector).append($p.removeAttr("data-end_append"));
+          if ($p) {
+            if ($p.attr("data-end_append")) {
+              $(this).closest(opts.selector).append($p.removeAttr("data-end_append"));
+            }
+            $p.attr("contenteditable", true).focus();
           }
-          $p.attr("contenteditable", true).focus();
           return false;
         },
         ul: function() {
@@ -48,8 +50,10 @@
               img_src = prompt("Enter an image URL");
           if (img_src) {
             $img = simpleRte.events.defaults.wrapWithElement("img");
-            $img[0].src = img_src;
-            $img.text("").unwrap("." + opts.editable_shim.attr("class"));
+            if ($img) {
+              $img[0].src = img_src;
+              $img.text("").unwrap("." + opts.editable_shim.attr("class"));
+            }
           }
           return false;
         }

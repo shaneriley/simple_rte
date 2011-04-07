@@ -114,6 +114,15 @@
                   }
                 };
             additional_rules_for.ol = additional_rules_for.ul;
+            if (range.collapsed) {
+              range.insertNode($("<span />", { id: "caret" })[0]);
+              var $caret = $("#caret");
+              if ($caret.closest("." + opts.menu_class).length) {
+                $caret.remove();
+                return $("<" + el + " />", { "data-end_append": true });
+              }
+              $caret.remove();
+            }
             if (!sel_obj.rangeCount) {
               if (el in additional_rules_for) {
                 return $("<" + el + " />", { "data-end_append": true });

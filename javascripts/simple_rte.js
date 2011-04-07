@@ -64,8 +64,16 @@
                 shiftText = function() {
                   $b.html($b.html() + $e.html());
                   $e.remove();
+                },
+                preventDefault = function() {
+                  $b.focus();
+                  e.preventDefault();
                 };
-            if ($e.text() === "") { $e.remove(); }
+            console.dir($.extend({}, range));
+            if ($e.text() === "") {
+              $e.remove();
+              preventDefault();
+            }
             else if ($e.closest("ul, ol").length) {
               if (!$e.closest("ul, ol").find("li").not(this).length) {
                 $b = $e.closest("ul, ol").prev();
@@ -73,12 +81,12 @@
                 $e.closest("ul, ol").remove();
               }
               else { shiftText(); }
+              preventDefault();
             }
             else if (range.startOffset === 0 && $b.length && !$b.is("." + opts.menu_class)) {
               shiftText();
+              preventDefault();
             }
-            $b.focus();
-            e.preventDefault();
           },
           "13": function(el, e) {
             // return

@@ -70,6 +70,7 @@
                   e.preventDefault();
                 };
             console.dir($.extend({}, range));
+            if (range.endOffset - range.startOffset < range.startContainer.length && range.endOffset) { return; }
             if ($e.text() === "") {
               $e.remove();
               preventDefault();

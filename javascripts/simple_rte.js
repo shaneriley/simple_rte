@@ -90,11 +90,29 @@
                 sel_obj = range.selection,
                 additional_rules_for = {
                   p: function() {
-                    if (!$wrapper.is(el)) { return false; }
-                    var event = $.Event("keydown");
-                    event.keyCode = 13;
-                    $wrapper.trigger(event);
-                    $e = $wrapper.next(el);
+                    if (!$wrapper.is(el)) {
+                      var offset = {
+                        start: range.startOffset,
+                        end: range.endOffset
+                      },
+                        text = $wrapper.text();
+                      $wrapper.text(text.substring(0, offset.start));
+                      $e = $("<" + el + " />", {
+                        text: $.trim(text.substring(offset.end))
+                      });
+                      if (!$wrapper.is("li")) {
+                        $e.insertAfter($wrapper);
+                      }
+                      else {
+                        $e.appendTo($wrapper).wrap(opts.editable_shim.clone());
+                      }
+                    }
+                    else {
+                      var event = $.Event("keydown");
+                      event.keyCode = 13;
+                      $wrapper.trigger(event);
+                      $e = $wrapper.next(el);
+                    }
                   },
                   ul: function() {
                     var offset = {

@@ -153,7 +153,8 @@
                       start: range.startOffset,
                       end: range.endOffset
                     },
-                      text = $wrapper.text();
+                      text = $wrapper.text(),
+                      remainder = "";
                     $wrapper.text(text.substring(0, offset.start));
                     $e = $("<" + el + " />", {
                       contenteditable: false,
@@ -173,15 +174,31 @@
                       end: range.endOffset
                     },
                       text = $wrapper.text();
-                    $wrapper.text(text.substring(0, offset.start));
-                    $e = $("<" + el + " />", {
-                      contenteditable: true,
-                      text: $.trim(text.substring(offset.end))
-                    });
-                    if (/inline/.test($wrapper.css("display")) || $wrapper.is("p")) {
-                      $e.insertAfter($wrapper);
+                    if (offset.start) {
+                      $wrapper.text(text.substring(0, offset.start));
+                      if (offset.end > offset.start) {
+                        remainder = text.substring(offset.end);
+                        text = text.substring(offset.start, offset.end);
+                      }
+                      else if (offset.end === 1) { text = text.substring(offset.start); }
+                      else { text = text.substring(offset.end); }
+                      $e = $("<" + el + " />", {
+                        contenteditable: true,
+                        text: $.trim(text)
+                      });
+                      if (/inline/.test($wrapper.css("display")) || $wrapper.is("p")) {
+                        $e.insertAfter($wrapper);
+                        $wrapper.clone().text($.trim(remainder)).insertAfter($e);
+                      }
+                      else {
+                        $e.appendTo($wrapper);
+                        $wrapper.clone().text($.trim(remainder)).insertAfter($wrapper);
+                      }
                     }
-                    else { $e.appendTo($wrapper); }
+                    else {
+                      // when caret at position 0 of element, need to replace element with new wrapping element
+                      console.dir($wrapper);
+                    }
                     $e.focus();
                   }
                 };

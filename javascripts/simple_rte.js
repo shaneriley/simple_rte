@@ -173,10 +173,13 @@
                       start: range.startOffset,
                       end: range.endOffset
                     },
-                      text = $wrapper.text();
+                      text = $wrapper.text(),
+                      remainder = "";
+                    if (!offset.start) { $wrapper = $(range.endContainer); }
                     if (offset.start) {
                       $wrapper.text(text.substring(0, offset.start));
                       if (offset.end > offset.start) {
+                        console.dir(offset);
                         remainder = text.substring(offset.end);
                         text = text.substring(offset.start, offset.end);
                       }
@@ -197,7 +200,8 @@
                     }
                     else {
                       // when caret at position 0 of element, need to replace element with new wrapping element
-                      console.dir($wrapper);
+                      $e = $("<" + el + " />", { contenteditable: true })
+                            .insertBefore($(range.endContainer));
                     }
                     $e.focus();
                   }

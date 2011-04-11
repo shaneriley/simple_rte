@@ -125,27 +125,34 @@
                 sel_obj = range.selection,
                 additional_rules_for = {
                   p: function() {
-                    if (range.endOffset === 1 && range.startOffset) {
-                      $wrapper = $(range.endContainer);
-                    }
-                    if ($wrapper.is("ul, ol, li")) { return false; }
-                    if (!$wrapper.is(el)) {
-                      var offset = {
-                        start: range.startOffset,
-                        end: range.endOffset
-                      },
-                        text = $wrapper.text();
-                      $wrapper.text(text.substring(0, offset.start));
-                      $e = $("<" + el + " />", {
-                        text: $.trim(text.substring(offset.end))
-                      });
-                      $e.insertAfter($wrapper);
+                    var offset = {
+                      start: range.startOffset,
+                      end: range.endOffset
+                    };
+                    if (!offset.start) { $wrapper = $(range.endContainer); }
+                    if (offset.start) {
+                      if (range.endOffset === 1 && range.startOffset) {
+                        $wrapper = $(range.endContainer);
+                      }
+                      if ($wrapper.is("ul, ol, li")) { return false; }
+                      if (!$wrapper.is(el)) {
+                        var text = $wrapper.text();
+                        $wrapper.text(text.substring(0, offset.start));
+                        $e = $("<" + el + " />", {
+                          text: $.trim(text.substring(offset.end))
+                        });
+                        $e.insertAfter($wrapper);
+                      }
+                      else {
+                        var event = $.Event("keydown");
+                        event.keyCode = 13;
+                        $wrapper.trigger(event);
+                        $e = $wrapper.next(el);
+                      }
                     }
                     else {
-                      var event = $.Event("keydown");
-                      event.keyCode = 13;
-                      $wrapper.trigger(event);
-                      $e = $wrapper.next(el);
+                      $e = $("<" + el + " />", { contenteditable: true })
+                            .insertBefore($(range.endContainer));
                     }
                   },
                   ul: function() {
@@ -179,7 +186,6 @@
                     if (offset.start) {
                       $wrapper.text(text.substring(0, offset.start));
                       if (offset.end > offset.start) {
-                        console.dir(offset);
                         remainder = text.substring(offset.end);
                         text = text.substring(offset.start, offset.end);
                       }
@@ -199,7 +205,6 @@
                       }
                     }
                     else {
-                      // when caret at position 0 of element, need to replace element with new wrapping element
                       $e = $("<" + el + " />", { contenteditable: true })
                             .insertBefore($(range.endContainer));
                     }

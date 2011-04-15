@@ -87,13 +87,15 @@
                 };
             if (range.endOffset - range.startOffset < range.startContainer.length && range.endOffset) { return; }
             if ($.trim($e.text()) === "") {
-              if ($e.closest("ul, ol").find("li").length < 2) {
-                $e.closest("ul, ol").remove();
+              if ($e.is("li")) {
+                if ($e.closest("ul, ol").find("li").length < 2) {
+                  $e.closest("ul, ol").remove();
+                }
               }
-              else { $e.remove(); }
+              $e.remove();
               preventDefault();
             }
-            else if ($e.closest("ul, ol").length) {
+            else if ($e.is("li")) {
               if (!$e.closest("ul, ol").find("li").not(this).length) {
                 $b = $e.closest("ul, ol").prev();
                 $b.text($b.text() + $e.text());
@@ -103,8 +105,11 @@
               preventDefault();
             }
             else if (range.startOffset === 0 && $b.length && !$b.is("." + opts.menu_class)) {
-              shiftText();
-              preventDefault();
+              var p = $(range.startContainer.parentElement).text().indexOf(range.startContainer.data);
+              if (!p) {
+                shiftText();
+                preventDefault();
+              }
             }
           },
           "13": function(el, e) {
@@ -114,12 +119,17 @@
                 range = getRange(this);
             offset.start = range.startOffset;
             offset.end = range.endOffset;
-            this.text(text.substring(0, offset.start));
-            text = text.substring(offset.end);
-            $("<" + el + " />", {
-              contenteditable: true,
-              text: $.trim(text)
-            }).insertAfter(this).focus();
+            if (!e.altKey) {
+              this.text(text.substring(0, offset.start));
+              text = text.substring(offset.end);
+              $("<" + el + " />", {
+                contenteditable: true,
+                text: $.trim(text)
+              }).insertAfter(this).focus();
+            }
+            else {
+              this.html(text.substring(0, offset.start) + "<br />" + text.substring(offset.end));
+            }
             e.preventDefault();
           },
           wrapWithElement: function(el) {
@@ -310,7 +320,7 @@
       }
       $e.prepend(simpleRte.menu());
       $e.keydown(function(e) {
-        if (e.keyCode in simpleRte.events.defaults && !e.altKey) {
+        if (e.keyCode in simpleRte.events.defaults) {
           simpleRte.events.defaults[e.keyCode].call($(e.target), e.target.localName, e);
         }
       });

@@ -57,6 +57,19 @@
           }
           return false;
         },
+        anchor: function() {
+          var $a,
+              href = prompt("Enter an address");
+          if (href) {
+            $a = simpleRte.events.defaults.wrapWithElement("a");
+            if ($a) {
+              href = (/^http:\/\//i.test(href)) ? href : "http://" + href;
+              $a[0].href = href;
+              $a.unwrap("." + opts.editable_shim.attr("class"));
+            }
+          }
+          return false;
+        },
         h1: function() {
           simpleRte.events.defaults.wrapWithElement("h1");
           return false;
@@ -263,8 +276,8 @@
               else if (range.endOffset > 1 && range.startOffset) {
                 $e = document.createElement(el);
                 range.surroundContents($e);
-                $e = $($e);
-                $e.wrap(opts.editable_shim.clone()).attr("contenteditable", true);
+                $e = $($e).attr("contenteditable", true);
+                //$e.wrap(opts.editable_shim.clone()).attr("contenteditable", true);
                 if ($e.css("display") !== "block") {
                   $e.closest("." + opts.editable_shim.attr("class")).css("display", "inline");
                 }
@@ -288,6 +301,9 @@
             },
             ol: {
               label: "1. …"
+            },
+            anchor: {
+              label: "<# />"
             },
             image: true,
             h1: true,

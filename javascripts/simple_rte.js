@@ -58,6 +58,7 @@
           return false;
         },
         anchor: function() {
+          if (getRange().collapsed) { return false; }
           var $a,
               href = prompt("Enter an address");
           if (href) {

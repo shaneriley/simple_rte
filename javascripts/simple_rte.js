@@ -159,8 +159,10 @@
                       start: range.startOffset,
                       end: range.endOffset
                     },
-                      text = $wrapper.text(),
+                      text = "",
                       remainder = "";
+                    $wrapper = $(range.endContainer);
+                    text = $wrapper.text();
                     $wrapper.text(text.substring(0, offset.start));
                     $e = $("<" + el + " />", {
                       contenteditable: false,

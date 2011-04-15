@@ -188,7 +188,10 @@
                         remainder = text.substring(offset.end);
                         text = text.substring(offset.start, offset.end);
                       }
-                      else if (offset.end === 1) { text = text.substring(offset.start); }
+                      else if (offset.end === 1) {
+                        remainder = text.substring(offset.start);
+                        text = "";
+                      }
                       else { text = text.substring(offset.end); }
                       $e = $("<" + el + " />", {
                         contenteditable: true,

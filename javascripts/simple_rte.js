@@ -239,7 +239,7 @@
               else if ($wrapper.is(el)) {
                 $wrapper.closest("." + opts.editable_shim.attr("class")).replaceWith($wrapper.text());
               }
-              else {
+              else if (range.endOffset > 1 && range.startOffset) {
                 $e = document.createElement(el);
                 range.surroundContents($e);
                 $e = $($e);

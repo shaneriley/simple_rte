@@ -70,6 +70,11 @@
           return false;
         }
       },
+      fireMenuAction: function(e, action) {
+        if (e.ctrlKey && action in simpleRte.controls) {
+          simpleRte.controls[action]();
+        }
+      },
       events: {
         defaults: {
           "8": function(el, e) {
@@ -132,6 +137,9 @@
             }
             e.preventDefault();
           },
+          "66": function(el, e) { simpleRte.fireMenuAction(e, "bold"); },
+          "73": function(el, e) { simpleRte.fireMenuAction(e, "italic"); },
+          "85": function(el, e) { simpleRte.fireMenuAction(e, "underline"); },
           wrapWithElement: function(el) {
             var range = getRange(),
                 sel_obj = range.selection,

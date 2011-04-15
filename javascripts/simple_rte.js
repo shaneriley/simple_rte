@@ -163,10 +163,10 @@
                       remainder = "";
                     $wrapper = $(range.endContainer);
                     text = $wrapper.text();
-                    $wrapper.text(text.substring(0, offset.start));
+                    $wrapper.text((offset.start) ? text.substring(0, offset.start) : " ");
                     $e = $("<" + el + " />", {
                       contenteditable: false,
-                      text: $.trim(text.substring(offset.end))
+                      text: $.trim((offset.end === 1) ? text.substring(offset.start) : text.substring(offset.end))
                     });
                     if (/inline/.test($wrapper.css("display")) || $wrapper.is("p")) {
                       $e.insertAfter($wrapper);

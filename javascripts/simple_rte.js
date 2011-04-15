@@ -234,7 +234,9 @@
                 $e;
             if (sel_obj.rangeCount) {
               if (el in additional_rules_for) { additional_rules_for[el](); }
-              else if ($wrapper.is(el)) { $wrapper.replaceWith($wrapper.text()); }
+              else if ($wrapper.is(el)) {
+                $wrapper.closest("." + opts.editable_shim.attr("class")).replaceWith($wrapper.text());
+              }
               else {
                 $e = document.createElement(el);
                 range.surroundContents($e);
@@ -270,7 +272,7 @@
             h3: true
           },
           menu_class: "rte_menu",
-          editable_shim: $("<div />", { "class": "rte_shim", contenteditable: false })
+          editable_shim: $("<span />", { "class": "rte_shim", contenteditable: false })
         }, options);
 
     simpleRte.menu = function() {

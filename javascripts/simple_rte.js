@@ -87,7 +87,10 @@
                 };
             if (range.endOffset - range.startOffset < range.startContainer.length && range.endOffset) { return; }
             if ($.trim($e.text()) === "") {
-              $e.remove();
+              if ($e.closest("ul, ol").find("li").length < 2) {
+                $e.closest("ul, ol").remove();
+              }
+              else { $e.remove(); }
               preventDefault();
             }
             else if ($e.closest("ul, ol").length) {

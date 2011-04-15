@@ -66,7 +66,6 @@
             if ($a) {
               href = (/^http:\/\//i.test(href)) ? href : "http://" + href;
               $a[0].href = href;
-              $a.unwrap("." + opts.editable_shim.attr("class"));
             }
           }
           return false;
